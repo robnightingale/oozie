@@ -94,7 +94,10 @@
         </description>
     </property>
 
-
+<property>        
+      <name>oozie.service.HadoopAccessorService.hadoop.configurations</name> 
+      <value>*=/usr/local/hadoop/etc/hadoop/</value>
+</property>
 
 <property>
       <name>oozie.authentication.type</name>
