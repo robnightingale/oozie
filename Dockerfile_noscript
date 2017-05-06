@@ -1,22 +1,27 @@
 FROM sumit/hadoop:latest
 MAINTAINER Sumit Kumar Maji
 
-RUN apt-get update \
-        && LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes --no-install-recommends \
-        zip unzip \
-        && apt-get clean \
-        && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+#Install Oozie
+COPY oozie-4.3.0.tar.gz /usr/local/oozie-4.3.0.tar.gz
+RUN tar -xzvf /usr/local/oozie-4.3.0.tar.gz -C /usr/local/
+RUN mv /usr/local/oozie-4.3.0 /usr/local/oozie
+RUN rm -rf /usr/local/oozie-4.3.0.tar.gz
+#RUN chown -R hduser:hadoop /usr/local/oozie
+
+COPY oozie-site.xml /usr/local/oozie/conf/oozie-site.xml
+COPY adminusers.txt /usr/local/oozie/conf/adminusers.txt
 
 
-ADD . /container/
-
-RUN /container/setup.sh
 
 RUN echo 'cd /usr/local/oozie/bin' >> /home/hduser/.bashrc
 RUN echo 'echo "1. Run => ./oozie-setup.sh prepare-war"' >> /home/hduser/.bashrc
 RUN echo 'echo "2. Run => ./oozie-setup.sh sharelib create -fs hdfs://<namenode>:54310"' >> /home/hduser/.bashrc
 RUN echo 'echo "3. Run => ./oozied.sh run"' >> /home/hduser/.bashrc
 
+
+RUN apt-get install -yq zip unzip
+RUN chown -R hduser:hadoop /usr/local/oozie/libext
 #Expose Oozie port 11000
 EXPOSE 11000
 
