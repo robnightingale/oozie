@@ -1,2 +1,2 @@
 #!/bin/bash
-docker build -t sumit/oozie:latest .
+docker build --build-arg REPOSITORY_HOST=http://master:8181 -t sumit/oozie:latest .
